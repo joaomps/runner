@@ -31,7 +31,8 @@ def check_and_run_jobs():
             if data['devicename'] == macos_device_name:
                 print_job_details(data)
                 # Run the command specified in pathtorun in a new terminal tab
-                cmd = ['osascript', '-e', 'tell application "Terminal" to do script "{}"'.format(data['pathtorun'])]
+                # cmd = ['osascript', '-e', 'tell application "Terminal" to do script "{}"'.format(data['pathtorun'])]
+                cmd = ['osascript', '-e', f'do shell script "{data["pathtorun"]}"']
                 subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
                 id = data['id']
@@ -44,10 +45,14 @@ def check_and_run_jobs():
 
                 if response.status_code == 200:
                     deleted_job = response.json()
-                    print(f"Deleted job with ID {deleted_job['id']}")
+                    print(f"Deleted job with ID {deleted_job['id']}\n")
                 else:
-                    print("Error deleting job")
-
+                    print("Error deleting job\n")
+            else:
+                current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                print(f"{current_time} - No jobs to run, checking again soon...")
+                return
+            
     except requests.exceptions.Timeout:
         print("The request timed out.")
     except requests.exceptions.RequestException as e:
@@ -55,7 +60,6 @@ def check_and_run_jobs():
 
 def print_job_details(job):
     print(f"Job details:\n"
-          f"ID: {job['id']}\n"
           f"Account to run: {job['accounttorun']}\n"
           f"Path to run: {job['pathtorun']}\n"
           f"Device name: {job['devicename']}\n")

@@ -6,7 +6,7 @@ import subprocess
 import os
 from datetime import datetime
 
-get_jobs_to_run_ws = 'https://expressjs-prisma-production-36b8.up.railway.app/getjobs'
+get_jobs_to_run_ws = 'url_endpoint_to_retrieve_jobs'
 
 # Get the name of the macOS device
 macos_device_name = socket.gethostname()
